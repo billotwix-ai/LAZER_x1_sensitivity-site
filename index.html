@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVISCYBER - نظام تحليل الأيم</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #050b14;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: #091424;
+            border: 1px solid #103153;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            color: #00ffcc;
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        header p {
+            color: #8fa3bf;
+            font-size: 12px;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #00ffcc;
+            margin: 15px 0 10px;
+            border-right: 3px solid #00ffcc;
+            padding-right: 8px;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .option-card {
+            background: #0d1b2a;
+            border: 1px solid #1b3a57;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+        .option-card:hover, .option-card.active {
+            border-color: #00ffcc;
+            background: #112a42;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+        .btn-analyze {
+            width: 100%;
+            background: linear-gradient(45deg, #00ffcc, #0077ff);
+            color: #050b14;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .btn-analyze:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+        /* النتائج */
+        .results-box {
+            display: none;
+            margin-top: 20px;
+            background: #0d1b2a;
+            border: 1px solid #00ffcc;
+            border-radius: 10px;
+            padding: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1b3a57;
+            font-size: 14px;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-value {
+            color: #00ffcc;
+            font-weight: bold;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>JARVISCYBER</h1>
+        <p>نظام تحليل الأيم بالذكاء الاصطناعي</p>
+    </header>
+
+    <!-- اختيار المشكلة -->
+    <div class="section-title">اختر مشكلتك الرئيسية</div>
+    <div class="options-grid" id="problemOptions">
+        <div class="option-card" data-problem="high">الأيم يرتفع فوق الراس (Over-aim)</div>
+        <div class="option-card" data-problem="low">الأيم ينزل تحت العدو (Under-aim)</div>
+        <div class="option-card" data-problem="spray">الأيم يتشتت أثناء الرش (Spray Control)</div>
+    </div>
+
+    <!-- اختيار نوع الجهاز -->
+    <div class="section-title">اختر نوع جهازك</div>
+    <div class="options-grid" id="deviceOptions">
+        <div class="option-card" data-device="strong">جهاز قوي (RAM 8GB+)</div>
+        <div class="option-card" data-device="mid">جهاز متوسط (RAM 4-6GB)</div>
+        <div class="option-card" data-device="weak">جهاز ضعيف (RAM 2-3GB)</div>
+    </div>
+
+    <button class="btn-analyze" onclick="generateSettings()">تحليل الأيم الآن ⚡</button>
+
+    <!-- صندوق النتيجة -->
+    <div class="results-box" id="resultsBox">
+        <div class="section-title" style="margin-top:0;">إعدادات الحساسية المقترحة</div>
+        <div class="result-item"><span>عام (General):</span> <span class="result-value" id="resGeneral">-</span></div>
+        <div class="result-item"><span>ريد دوت (Red Dot):</span> <span class="result-value" id="resRedDot">-</span></div>
+        <div class="result-item"><span>سكوب 2x:</span> <span class="result-value" id="resScope2">-</span></div>
+        <div class="result-item"><span>سكوب 4x:</span> <span class="result-value" id="resScope4">-</span></div>
+        <div class="result-item"><span>DPI المقترح:</span> <span class="result-value" id="resDpi">-</span></div>
+        <div class="result-item"><span>زر الإطلاق (Fire Button):</span> <span class="result-value" id="resFireBtn">-</span></div>
+    </div>
+</div>
+
+<script>
+    let selectedProblem = '';
+    let selectedDevice = '';
+
+    // تفعيل اختيار المشكلة
+    document.querySelectorAll('#problemOptions .option-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('#problemOptions .option-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            selectedProblem = this.getAttribute('data-problem');
+        });
+    });
+
+    // تفعيل اختيار الجهاز
+    document.querySelectorAll('#deviceOptions .option-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('#deviceOptions .option-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            selectedDevice = this.getAttribute('data-device');
+        });
+    });
+
+    // دالة توليد النتائج بناء على المدخلات
+    function generateSettings() {
+        if(!selectedProblem || !selectedDevice) {
+            alert('الرجاء اختيار المشكلة ونوع الجهاز أولاً!');
+            return;
+        }
+
+        let general = 140, redDot = 120, scope2 = 100, scope4 = 90, dpi = 500, fireBtn = 50;
+
+        // تعديل القيم بناء على الأداء والمشكلة
+        if(selectedDevice === 'strong') {
+            general += 20;
+            dpi += 40;
+        } else if(selectedDevice === 'weak') {
+            general -= 30;
+            dpi -= 60;
+        }
+
+        if(selectedProblem === 'high') {
+            general -= 15; // تخفيف الحساسية إذا كان الايم يرتفع كثيراً
+            fireBtn = 55;
+        } else if(selectedProblem === 'low') {
+            general += 20; // زيادة الحساسية إذا كان بطيئاً
+            fireBtn = 45;
+        }
+
+        // عرض النتائج في الصفحة
+        document.getElementById('resGeneral').innerText = general;
+        document.getElementById('resRedDot').innerText = redDot;
+        document.getElementById('resScope2').innerText = scope2;
+        document.getElementById('resScope4').innerText = scope4;
+        document.getElementById('resDpi').innerText = dpi;
+        document.getElementById('resFireBtn').innerText = fireBtn + '%';
+
+        document.getElementById('resultsBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
