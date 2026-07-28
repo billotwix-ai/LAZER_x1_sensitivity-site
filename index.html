@@ -234,6 +234,7 @@
             text-align: center;
             text-shadow: 0 0 8px #39ff14;
             letter-spacing: 1px;
+            display: none; /* مخفي تلقائياً ولا يظهر إلا للأدمن عبر الرابط السري */
         }
 
         .logs-modal {
@@ -306,7 +307,7 @@
             </div>
         </div>
 
-        <!-- نافذة السجلات السيبرانية -->
+        <!-- نافذة السجلات السيبرانية للأدمن فقط -->
         <div class="logs-modal" id="logsModal">
             <h3 style="color:#00f3ff; text-align:center; margin-bottom:5px;">🌐 سجلات الزوار السيبرانية</h3>
             <p style="font-size:10px; color:#ff0055; text-align:center;">البلد، التوقيت، الـ IP، وعدد مرات الدخول</p>
@@ -401,7 +402,7 @@
             <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- واجهة زيادة اللايكات (تم تفعيل خاصية منع إدخال الحروف) -->
+        <!-- واجهة زيادة اللايكات (مع ميزة منع الحروف) -->
         <div id="likesSection" style="display:none; text-align:center;">
             <div class="section-title">زيادة لايكات حساب فري فاير</div>
             <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الحساب (ID - أرقام فقط):</p>
@@ -410,7 +411,7 @@
             <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- واجهة إرسال طلب صداقة البوت (تم تفعيل خاصية منع إدخال الحروف) -->
+        <!-- واجهة إرسال طلب صداقة البوت (مع ميزة منع الحروف) -->
         <div id="botFriendSection" style="display:none; text-align:center;">
             <div class="section-title">🤖 إرسال طلب صداقة البوت السري</div>
             <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الشخص (UID - أرقام فقط):</p>
@@ -421,6 +422,7 @@
 
         <div class="attempts-badge" id="attemptsBadge" style="display:none;">المحاولات المجانية المتبقية: <span id="attemptsLeft">3</span> / 3</div>
         
+        <!-- زر السجلات السيبرانية للأدمن فقط -->
         <button class="admin-logs-btn" id="adminLogsBtn" onclick="openLogsModal()">📊 سجلات الزوار السيبرانية (IP والبلد)</button>
 
         <!-- نتائج التحليل -->
@@ -445,17 +447,17 @@
 
     let chosenMainMode = '';
 
-    // التحقق التلقائي للرابط السري الخاص بك عند فتح الصفحة
+    // التحقق التلقائي للرابط السري للأدمن عند فتح الصفحة
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const adminKey = urlParams.get('admin');
-        const SECRET_ADMIN_ID = "5840394041"; // الرقم السري الخاص بك
+        const SECRET_ADMIN_ID = "5840394041"; // مفتاح الأدمن السري الخاص بك
 
         if (adminKey === SECRET_ADMIN_ID) {
             localStorage.setItem('lazer_is_admin', 'true');
         }
 
-        // إظهار أو إخفاء زر السجلات بناءً على كونك الأدمن أم زائر عادي
+        // إظهار أو إخفاء زر السجلات بناءً على الصلاحية المحفوظة
         if (localStorage.getItem('lazer_is_admin') === 'true') {
             document.getElementById('adminLogsBtn').style.display = 'block';
         } else {
@@ -526,7 +528,6 @@
         if(element) element.style.borderColor = '#ff0055';
         chosenMainMode = mode;
         
-        // إخفاء جميع الأقسام والنتائج أولاً لمنع التداخل
         document.getElementById('sensitivitySection').style.display = 'none';
         document.getElementById('likesSection').style.display = 'none';
         document.getElementById('shopSection').style.display = 'none';
