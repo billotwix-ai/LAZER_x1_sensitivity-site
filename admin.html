@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الأدمن - LAZER X1</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box, .admin-panel {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- صندوق تسجيل الدخول -->
+    <div id="loginSection" class="login-box">
+        <h2>تسجيل دخول الأدمن</h2>
+        <p>الرجاء إدخال آدي الأدمن للمتابعة</p>
+        <input type="password" id="adminIdInput" placeholder="أدخل الآدي (مثال: 5840394041)">
+        <button onclick="checkAdmin()">دخول</button>
+        <div id="errorMsg" class="error"></div>
+    </div>
+
+    <!-- لوحة التحكم الفعلية (تظهر بعد الدخول الصحيح) -->
+    <div id="panelSection" class="admin-panel hidden">
+        <h2>مرحباً بك يا أدمن ⚡</h2>
+        <p>أنت الآن تحكم وتتحكم في لوحة سيطرة LAZER X1 بنجاح.</p>
+        <hr style="border-color: #334155; margin: 20px 0;">
+        <button onclick="logout()" style="background: #dc2626;">تسجيل خروج</button>
+    </div>
+
+    <script>
+        function checkAdmin() {
+            const inputVal = document.getElementById('adminIdInput').value;
+            const correctId = "5840394041"; // آدي الأدمن الخاص بك
+
+            if (inputVal === correctId) {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('panelSection').classList.remove('hidden');
+            } else {
+                document.getElementById('errorMsg').innerText = "الآدي غير صحيح، حاول مرة أخرى!";
+            }
+        }
+
+        function logout() {
+            document.getElementById('panelSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminIdInput').value = '';
+            document.getElementById('errorMsg').innerText = '';
+        }
+    </script>
+
+</body>
+</html>
