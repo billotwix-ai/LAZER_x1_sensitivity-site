@@ -287,6 +287,63 @@
         }
         .spinner { width: 45px; height: 45px; border: 4px solid rgba(255,0,85,0.1); border-top: 4px solid #ff0055; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* تعديلات وتنسيقات كود تأثير الحركة والتموج وبطاقة الصداقة المضافة */
+        @keyframes waveAnimation {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .profile-img-wave {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            animation: waveAnimation 3s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ff4757;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        .card {
+            background: #101828;
+            border: 1px solid #1e3a6e;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .card h3 {
+            color: #ff0055;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .card input {
+            width: 100%;
+            background: #07090f;
+            border: 1px solid #1e3a6e;
+            color: #ff0055;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            outline: none;
+            text-align: center;
+        }
+        .card button {
+            width: 100%;
+            background: linear-gradient(135deg, #ff0055, #ff5500);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 0, 85, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -301,8 +358,11 @@
         
         <!-- واجهة البداية السحرية المخصصة -->
         <div class="splash-screen" id="splashScreen">
-            <!-- صورتك الشخصية بدقة فائقة -->
-            <img src="1000015413.jpg" alt="LAZER X1" class="user-avatar">
+            <!-- صورتك الشخصية بدقة فائقة مع تأثير الحركة والتموج -->
+            <div style="text-align: center; margin-bottom: 10px;">
+                <img src="1000015413.jpg" alt="Profile Image" class="profile-img-wave">
+            </div>
+            
             <div class="typing-title">LAZER X1 SYSTEM</div>
             
             <div class="main-menu-options" id="mainMenuOptions">
@@ -408,6 +468,13 @@
             </div>
 
             <button class="analyze-btn" onclick="startAnalysis()">تحليل الحساسية الآن ⚡</button>
+            
+            <!-- بطاقة إرسال طلب الصداقة المضافة حديثاً -->
+            <div class="card">
+                <h3>إرسال طلب صداقة سري</h3>
+                <input type="text" id="targetUid" placeholder="أدخل آيدي الشخص (UID)">
+                <button onclick="sendFriendRequest()">إرسال الطلب</button>
+            </div>
         </div>
 
         <!-- واجهة زيادة اللايكات -->
@@ -610,6 +677,30 @@
             loader.style.display = 'none';
             alert('🎉 تم معالجة طلب الآيدي (' + ffId + ') بنجاح! سيتم إضافة اللايكات لحسابك خلال دقائق.');
         }, 3000);
+    }
+
+    // دالة إرسال طلب الصداقة المضافة
+    function sendFriendRequest() {
+        const uid = document.getElementById('targetUid').value;
+        if (!uid) {
+            alert('يرجى إدخال آيدي الشخص أولاً!');
+            return;
+        }
+        fetch('/add_friend', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ uid: uid }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('حدث خطأ أثناء إرسال الطلب');
+        });
     }
 
     // نظام تسجيل الزوار كجدول مقسم
