@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVISCYBER - نظام تحليل الأيم بالذكاء الاصطناعي</title>
+    <title>LAZER X1 - نظام تحليل حساسية فري فاير</title>
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: #07090f;
             color: #e0e6ed;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,309 +16,336 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
+            overflow-x: hidden;
+            position: relative;
         }
+
+        /* خلفية الرموز والأرقام المتحركة في الجوانب */
+        .matrix-bg {
+            position: fixed;
+            top: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+            overflow: hidden;
+        }
+        .matrix-col {
+            font-family: monospace;
+            color: #00f3ff;
+            font-size: 14px;
+            line-height: 1.2;
+            animation: fall 10s linear infinite;
+        }
+        .matrix-col:nth-child(2) { animation-duration: 7s; animation-delay: 2s; }
+        @keyframes fall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
         .container {
             width: 100%;
             max-width: 440px;
-            background: #0d1322;
+            background: rgba(13, 19, 34, 0.95);
             border: 1px solid #1a2c4e;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
             position: relative;
-            overflow: hidden;
+            z-index: 2;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            color: #00f3ff;
-            font-size: 24px;
-            margin: 0;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
-        }
-        .header p {
-            color: #8ab4f8;
-            font-size: 12px;
-            margin: 5px 0 0 0;
-        }
-        .section-title {
-            color: #00f3ff;
-            font-size: 13px;
-            margin: 15px 0 8px 0;
-            border-right: 3px solid #00f3ff;
-            padding-right: 8px;
-            font-weight: bold;
-        }
-        .options-grid {
+
+        /* واجهة البداية السحرية Splash Screen */
+        .splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #07090f;
+            z-index: 50;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 16px;
+            transition: opacity 0.5s ease;
         }
+        .sniper-scope {
+            width: 80px; height: 80px;
+            border: 2px dashed #00f3ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+            animation: pulse-scope 2s infinite ease-in-out;
+        }
+        .sniper-scope::before {
+            content: '+';
+            color: #00f3ff;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        @keyframes pulse-scope {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(0,243,255,0); }
+            50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,243,255,0.4); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(0,243,255,0); }
+        }
+        .typing-title {
+            color: #00f3ff;
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 12px rgba(0, 243, 255, 0.6);
+            min-height: 35px;
+            text-align: center;
+        }
+        .splash-subtitle {
+            color: #8ab4f8;
+            font-size: 12px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .start-btn {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00f3ff, #0066ff);
+            border: none;
+            color: #07090f;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
+            transition: transform 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 2px;
+        }
+        .start-btn:active { transform: scale(0.92); }
+
+        /* المحتوى الرئيسي */
+        .header { text-align: center; margin-bottom: 15px; }
+        .header h1 { color: #00f3ff; font-size: 22px; margin: 0; text-shadow: 0 0 10px rgba(0,243,255,0.4); }
+        .header p { color: #8ab4f8; font-size: 11px; margin: 4px 0 0 0; }
+
+        .section-title {
+            color: #00f3ff;
+            font-size: 12px;
+            margin: 12px 0 6px 0;
+            border-right: 3px solid #00f3ff;
+            padding-right: 6px;
+            font-weight: bold;
+        }
+        .options-grid { display: flex; flex-direction: column; gap: 6px; }
         .option-btn {
             background: #121c33;
             border: 1px solid #1e3a6e;
             color: #c9d1d9;
-            padding: 11px 14px;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
             cursor: pointer;
             text-align: right;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
-        .option-btn:hover {
-            border-color: #00f3ff;
-            background: #1a2947;
-        }
-        .option-btn.selected {
+        .option-btn:hover, .option-btn.selected {
             border-color: #00f3ff;
             background: rgba(0, 243, 255, 0.12);
             color: #00f3ff;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         }
-        .sub-options {
+        .device-input {
+            width: 100%;
+            background: #121c33;
+            border: 1px solid #1e3a6e;
+            color: #00f3ff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 6px;
             display: none;
-            margin-top: 8px;
-            padding-right: 10px;
-            border-right: 2px dashed #1e3a6e;
-            gap: 6px;
-            flex-direction: column;
+            outline: none;
         }
+        .device-input::placeholder { color: #5a739c; }
+
         .analyze-btn {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 15px;
             background: linear-gradient(135deg, #00f3ff, #0077ff);
             color: #07090f;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3);
-            transition: transform 0.1s ease;
         }
-        .analyze-btn:active {
-            transform: scale(0.98);
+
+        /* مربعات النتائج المنفصلة */
+        .results-container {
+            margin-top: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
         }
-        .results-box {
-            margin-top: 20px;
+        .result-card {
             background: #101828;
             border: 1px solid #1e3a6e;
-            border-radius: 12px;
-            padding: 15px;
-            display: none;
+            border-radius: 10px;
+            padding: 10px 12px;
         }
-        .results-title {
+        .result-card-title {
             color: #00f3ff;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 12px;
-            text-align: center;
+            margin-bottom: 6px;
             border-bottom: 1px solid #1a2c4e;
-            padding-bottom: 8px;
+            padding-bottom: 4px;
         }
         .result-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            font-size: 13px;
+            font-size: 12px;
+            padding: 4px 0;
         }
-        .result-row:last-child {
-            border-bottom: none;
+        .result-label { color: #8ab4f8; }
+        .result-value { color: #00f3ff; font-weight: bold; font-family: monospace; }
+
+        .attempts-badge { text-align: center; font-size: 10px; color: #8ab4f8; margin-top: 10px; }
+        .admin-logs-btn { background: transparent; border: 1px dashed #1e3a6e; color: #8ab4f8; font-size: 9px; padding: 4px; width: 100%; margin-top: 8px; border-radius: 5px; cursor: pointer; }
+
+        /* Loader & Paywall */
+        .loader-overlay, .paywall-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 15, 0.95);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 30; border-radius: 16px; padding: 20px; text-align: center;
         }
-        .result-label {
-            color: #8ab4f8;
-        }
-        .result-value {
-            color: #00f3ff;
-            font-weight: bold;
-            font-family: monospace;
-            font-size: 14px;
-        }
-        /* Loader Overlay */
-        .loader-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 9, 15, 0.92);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            border-radius: 16px;
-        }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(0, 243, 255, 0.1);
-            border-top: 4px solid #00f3ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loader-text {
-            color: #00f3ff;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-        /* Paywall Modal */
-        .paywall-modal {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 9, 15, 0.96);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-        }
-        .paywall-modal h2 {
-            color: #ff3366;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        .paywall-modal p {
-            font-size: 13px;
-            color: #c9d1d9;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        .pay-option {
-            width: 100%;
-            background: #121c33;
-            border: 1px solid #1e3a6e;
-            color: #fff;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .pay-option:hover {
-            border-color: #00f3ff;
-            background: #1a2947;
-        }
-        .attempts-badge {
-            text-align: center;
-            font-size: 11px;
-            color: #8ab4f8;
-            margin-top: 12px;
-        }
-        .admin-logs-btn {
-            background: transparent;
-            border: 1px dashed #1e3a6e;
-            color: #8ab4f8;
-            font-size: 10px;
-            padding: 5px;
-            width: 100%;
-            margin-top: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+        .spinner { width: 45px; height: 45px; border: 4px solid rgba(0,243,255,0.1); border-top: 4px solid #00f3ff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .paywall-modal h2 { color: #ff3366; font-size: 18px; margin-bottom: 8px; }
+        .paywall-modal p { font-size: 12px; color: #c9d1d9; margin-bottom: 15px; }
+        .pay-option { width: 100%; background: #121c33; border: 1px solid #1e3a6e; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container" id="appContainer">
-    <!-- Loader -->
-    <div class="loader-overlay" id="loaderOverlay">
-        <div class="spinner"></div>
-        <div class="loader-text" id="loaderText">جاري فحص خوارزميات اللعبة وتحليل الأيم...</div>
+    <!-- خلفية الرموز والأرقام المتحركة -->
+    <div class="matrix-bg">
+        <div class="matrix-col">10110<br>01011<br>11100<br>00101<br>10101<br>01110<br>10011</div>
+        <div class="matrix-col">01001<br>10110<br>00111<br>11010<br>01001<br>10100<br>01101</div>
     </div>
 
-    <!-- Paywall Modal -->
-    <div class="paywall-modal" id="paywallModal">
-        <h2>انتهت المحاولات المجانية (3/3)</h2>
-        <p>لقد استهلكت الحد الأقصى من التحليلات المجانية. لتفعيل نظام الأيم الدائم وفتح التحليلات بلا حدود، يرجى إتمام الدفع بإحدى الطرق أدناه:</p>
-        <div class="pay-option" onclick="alert('بريدي موب (Baridimob):\nRIB: 00799999002345678912\nيرجى إرسال الإيصال عبر تيليجرام لتفعيل حسابك فوراً.')">💳 بريدي موب (Baridimob)</div>
-        <div class="pay-option" onclick="alert('فلكسي (Flexy):\nرقم الهاتف: 0699000000\nأرسل رصيد فليكسي وتواصل معنا للتفعيل.')">📱 فلكسي (Flexy جازي/موبيليس/أوريدو)</div>
-        <div class="pay-option" onclick="alert('بينانس (Binance Pay):\nUSDT ID: 123456789\nأو عبر Binance Pay Email.')">🪙 بينانس (Binance Pay - USDT)</div>
-    </div>
+    <div class="container" id="appContainer">
+        
+        <!-- شاشة البداية السحرية -->
+        <div class="splash-screen" id="splashScreen">
+            <div class="sniper-scope"></div>
+            <div class="typing-title" id="typingTitle"></div>
+            <div class="splash-subtitle">نظام تحليل حساسية فري فاير بالذكاء الاصطناعي</div>
+            <button class="start-btn" onclick="enterApp()">START</button>
+        </div>
 
-    <div class="header">
-        <h1>JARVISCYBER</h1>
-        <p>نظام تحليل الأيم بالذكاء الاصطناعي</p>
-    </div>
+        <!-- Loader -->
+        <div class="loader-overlay" id="loaderOverlay">
+            <div class="spinner"></div>
+            <div style="color: #00f3ff; font-size: 13px; font-weight: bold;" id="loaderText">جاري فحص خوارزميات فري فاير...</div>
+        </div>
 
-    <!-- 1. Problem Selection -->
-    <div class="section-title">اختر مشكلتك الرئيسية</div>
-    <div class="options-grid" id="problemOptions">
-        <div class="option-btn" onclick="selectOption('problem', this)">الأيم يرتفع فوق الرأس (Over-aim)</div>
-        <div class="option-btn" onclick="selectOption('problem', this)">الأيم ينزل تحت العدو (Under-aim)</div>
-        <div class="option-btn" onclick="selectOption('problem', this)">الأيم يتشتت أثناء الرش (Spray Control)</div>
-    </div>
+        <!-- Paywall -->
+        <div class="paywall-modal" id="paywallModal">
+            <h2>انتهت المحاولات المجانية (3/3)</h2>
+            <p>لتفعيل النظام مدى الحياة، يرجى الدفع لإحدى الطرق أدناه:</p>
+            <div class="pay-option" onclick="alert('بريدي موب:\nRIB: 00799999002345678912')">💳 بريدي موب (Baridimob)</div>
+            <div class="pay-option" onclick="alert('فلكسي:\n0699000000')">📱 فلكسي (Flexy)</div>
+            <div class="pay-option" onclick="alert('بينانس:\nUSDT ID: 123456789')">🪙 بينانس (Binance Pay)</div>
+        </div>
 
-    <!-- 2. Brand & Device Selection -->
-    <div class="section-title">اختر ماركة ونوع جهازك</div>
-    <div class="options-grid" id="brandOptions">
-        <!-- Samsung -->
-        <div class="option-btn" onclick="toggleBrand('samsung', this)">هواتف سامسونج (Samsung) ▾
-            <div class="sub-options" id="sub-samsung">
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('سامسونج - A54 / A52', this)">Galaxy A54 / A52</div>
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('سامسونج - S23 / S24 Ultra', this)">Galaxy S23 / S24 Ultra</div>
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('سامسونج - A32 / A14', this)">Galaxy A32 / A14</div>
+        <div class="header">
+            <h1>LAZER X1</h1>
+            <p>محلل حساسية Free Fire الاحترافي</p>
+        </div>
+
+        <!-- 1. Problem Selection -->
+        <div class="section-title">اختر مشكلة الأيم الرئيسية</div>
+        <div class="options-grid">
+            <div class="option-btn" onclick="selectOption('problem', this)">الأيم يرتفع فوق الرأس (Over-aim)</div>
+            <div class="option-btn" onclick="selectOption('problem', this)">الأيم ينزل تحت العدو (Under-aim)</div>
+            <div class="option-btn" onclick="selectOption('problem', this)">الأيم يتشتت أثناء الرش (Spray Control)</div>
+        </div>
+
+        <!-- 2. Brand Selection with Input Field -->
+        <div class="section-title">اختر ماركة جهازك</div>
+        <div class="options-grid">
+            <div class="option-btn" onclick="selectBrand('هواتف سامسونج (Samsung)', this)">هواتف سامسونج (Samsung)</div>
+            <div class="option-btn" onclick="selectBrand('هواتف شاومي (Xiaomi)', this)">هواتف شاومي (Xiaomi)</div>
+            <div class="option-btn" onclick="selectBrand('هواتف إنفينكس (Infinix)', this)">هواتف إنفينكس (Infinix)</div>
+            <div class="option-btn" onclick="selectBrand('هواتف أيفون (iPhone)', this)">هواتف أيفون (iPhone)</div>
+        </div>
+        <input type="text" id="deviceInput" class="device-input" placeholder="اكتب اسم جهازك هنا بدقة..." oninput="saveDeviceText(this)">
+
+        <!-- 3. RAM Selection -->
+        <div class="section-title">اختر مواصفات الذاكرة (RAM)</div>
+        <div class="options-grid">
+            <div class="option-btn" onclick="selectOption('ram', this)">جهاز قوي (+RAM 8GB)</div>
+            <div class="option-btn" onclick="selectOption('ram', this)">جهاز متوسط (RAM 4-6GB)</div>
+            <div class="option-btn" onclick="selectOption('ram', this)">جهاز ضعيف (RAM 2-3GB)</div>
+        </div>
+
+        <button class="analyze-btn" onclick="startAnalysis()">تحليل الحساسية الآن ⚡</button>
+
+        <div class="attempts-badge" id="attemptsBadge">المحاولات المجانية المتبقية: 3 / 3</div>
+        <button class="admin-logs-btn" onclick="downloadLogs()">📥 تنزيل سجلات الزوار (TXT)</button>
+
+        <!-- نتائج التحليل المنفصلة في صناديق مستقلة -->
+        <div class="results-container" id="resultsContainer">
+            <!-- 1. صندوق الحساسية -->
+            <div class="result-card">
+                <div class="result-card-title">⚙️ إعدادات الحساسية (فري فاير)</div>
+                <div class="result-row"><span class="result-label">عام (General):</span><span class="result-value" id="resGen">145</span></div>
+                <div class="result-row"><span class="result-label">ريد دوت (Red Dot):</span><span class="result-value" id="resRed">120</span></div>
+                <div class="result-row"><span class="result-label">سكوب 2x:</span><span class="result-value" id="res2x">100</span></div>
+                <div class="result-row"><span class="result-label">سكوب 4x:</span><span class="result-value" id="res4x">90</span></div>
+            </div>
+
+            <!-- 2. صندوق الـ DPI أو سرعة المؤشر للأيفون -->
+            <div class="result-card">
+                <div class="result-card-title" id="dpiCardTitle">🎛️ مصفوفة الـ DPI</div>
+                <div class="result-row">
+                    <span class="result-label" id="dpiLabel">DPI المقترح:</span>
+                    <span class="result-value" id="resDpi">540</span>
+                </div>
+            </div>
+
+            <!-- 3. صندوق زر إطلاق النار -->
+            <div class="result-card">
+                <div class="result-card-title">🎯 زر إطلاق النار (Fire Button)</div>
+                <div class="result-row"><span class="result-label">الحجم والموقع:</span><span class="result-value" id="resBtn">55%</span></div>
             </div>
         </div>
-        <!-- Xiaomi -->
-        <div class="option-btn" onclick="toggleBrand('xiaomi', this)">هواتف شاومي (Xiaomi) ▾
-            <div class="sub-options" id="sub-xiaomi">
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('شاومي - Poco X3 / X4 Pro', this)">Poco X3 / X4 / X5 Pro</div>
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('شاومي - Redmi Note 10/11/12', this)">Redmi Note 10 / 11 / 12</div>
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('شاومي - Xiaomi 13 / 14', this)">Xiaomi 13 / 14</div>
-            </div>
-        </div>
-        <!-- Infinix -->
-        <div class="option-btn" onclick="toggleBrand('infinix', this)">هواتف انفينكس (Infinix) ▾
-            <div class="sub-options" id="sub-infinix">
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('انفينكس - Hot 30 / 40', this)">Hot 30 / 40 Pro</div>
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('انفينكس - Note 30 / 40', this)">Note 30 / 40 Pro</div>
-                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('انفينكس - GT 10/20 Pro', this)">GT 10 / 20 Pro</div>
-            </div>
-        </div>
     </div>
-
-    <!-- 3. RAM Selection -->
-    <div class="section-title">اختر مواصفات الذاكرة العشوائية (RAM)</div>
-    <div class="options-grid" id="ramOptions">
-        <div class="option-btn" onclick="selectOption('ram', this)">جهاز قوي (+RAM 8GB)</div>
-        <div class="option-btn" onclick="selectOption('ram', this)">جهاز متوسط (RAM 4-6GB)</div>
-        <div class="option-btn" onclick="selectOption('ram', this)">جهاز ضعيف (RAM 2-3GB)</div>
-    </div>
-
-    <button class="analyze-btn" onclick="startAnalysis()">تحليل الأيم الآن ⚡</button>
-
-    <div class="attempts-badge" id="attemptsBadge">المحاولات المجانية المتبقية: 3 / 3</div>
-    <button class="admin-logs-btn" onclick="downloadLogs()">📥 تنزيل سجلات الزوار (ملف TXT)</button>
-
-    <!-- Results Box -->
-    <div class="results-box" id="resultsBox">
-        <div class="results-title">⚙️ إعدادات الحساسية المقترحة</div>
-        <div class="result-row"><span class="result-label">عام (General):</span><span class="result-value" id="resGen">145</span></div>
-        <div class="result-row"><span class="result-label">ريد دوت (Red Dot):</span><span class="result-value" id="resRed">120</span></div>
-        <div class="result-row"><span class="result-label">سكوب 2x:</span><span class="result-value" id="res2x">100</span></div>
-        <div class="result-row"><span class="result-label">سكوب 4x:</span><span class="result-value" id="res4x">90</span></div>
-        <div class="result-row"><span class="result-label">DPI المقترح:</span><span class="result-value" id="resDpi">540</span></div>
-        <div class="result-row"><span class="result-label">زر الإطلاق (Fire Button):</span><span class="result-value" id="resBtn">55%</span></div>
-    </div>
-</div>
 
 <script>
-    let selectedSelections = { problem: '', device: '', ram: '' };
+    // تأثير ظهور الحروف حرف بحرف لاسم LAZER X1
+    const textToType = "LAZER X1";
+    let charIndex = 0;
+    function typeEffect() {
+        if (charIndex < textToType.length) {
+            document.getElementById("typingTitle").innerHTML += textToType.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeEffect, 150);
+        }
+    }
+    window.onload = () => { typeEffect(); };
+
+    function enterApp() {
+        document.getElementById('splashScreen').style.opacity = '0';
+        setTimeout(() => { document.getElementById('splashScreen').style.display = 'none'; }, 500);
+    }
+
+    let selectedSelections = { problem: '', brand: '', deviceName: '', ram: '' };
 
     function selectOption(category, element) {
         const parent = element.parentElement;
@@ -330,140 +354,116 @@
         selectedSelections[category] = element.innerText;
     }
 
-    function toggleBrand(brandId, element) {
-        // Hide all other sub-options
-        ['samsung', 'xiaomi', 'infinix'].forEach(b => {
-            if(b !== brandId) {
-                document.getElementById('sub-' + b).style.display = 'none';
-            }
-        });
+    function selectBrand(brandName, element) {
+        const parent = element.parentElement;
+        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedSelections.brand = brandName;
+
+        const inputField = document.getElementById('deviceInput');
+        inputField.style.display = 'block';
+        inputField.value = '';
+        selectedSelections.deviceName = '';
         
-        // Toggle current
-        const sub = document.getElementById('sub-' + brandId);
-        sub.style.display = sub.style.display === 'flex' ? 'none' : 'flex';
-
-        // Highlight main brand button
-        const parent = element.parentElement;
-        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
-        element.classList.add('selected');
-    }
-
-    function selectDevice(deviceName, element) {
-        const parent = element.parentElement;
-        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
-        element.classList.add('selected');
-        selectedSelections.device = deviceName;
-    }
-
-    // Attempts logic
-    let attempts = parseInt(localStorage.getItem('jarvis_attempts') || '0');
-    updateAttemptsDisplay();
-
-    if (attempts >= 3) {
-        lockApp();
-    }
-
-    function updateAttemptsDisplay() {
-        const remaining = Math.max(0, 3 - attempts);
-        document.getElementById('attemptsBadge').innerText = `المحاولات المجانية المتبقية: ${remaining} / 3`;
-    }
-
-    function lockApp() {
-        document.getElementById('paywallModal').style.display = 'flex';
-    }
-
-    // IP & Visitor logger
-    async function logVisitorData() {
-        try {
-            const res = await fetch('https://ipapi.co/json/');
-            const data = await res.json();
-            const logEntry = `[${new Date().toLocaleString()}] IP: ${data.ip} | Country: ${data.country_name} | City: ${data.city} | ISP: ${data.org}\n`;
-            
-            let logs = localStorage.getItem('visitor_logs') || '';
-            if (!logs.includes(data.ip)) {
-                logs += logEntry;
-                localStorage.setItem('visitor_logs', logs);
-            }
-        } catch (e) {
-            const fallbackLog = `[${new Date().toLocaleString()}] IP: Online Visitor (API Blocked)\n`;
-            let logs = localStorage.getItem('visitor_logs') || '';
-            logs += fallbackLog;
-            localStorage.setItem('visitor_logs', logs);
+        if (brandName.includes('أيفون')) {
+            inputField.placeholder = "اكتب طراز الأيفون هنا (مثلاً: iPhone 13 Pro Max)...";
+        } else {
+            inputField.placeholder = `اكتب طراز ${brandName} هنا...`;
         }
     }
 
-    logVisitorData();
+    function saveDeviceText(input) {
+        selectedSelections.deviceName = input.value;
+    }
 
-    function downloadLogs() {
-        const logs = localStorage.getItem('visitor_logs') || 'لا توجد سجلات حتى الآن.';
-        const blob = new Blob([logs], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'visitors_logs.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    // إدارة المحاولات
+    let attempts = parseInt(localStorage.getItem('lazer_attempts') || '0');
+    updateAttemptsDisplay();
+    if (attempts >= 3) { document.getElementById('paywallModal').style.display = 'flex'; }
+
+    function updateAttemptsDisplay() {
+        document.getElementById('attemptsBadge').innerText = `المحاولات المجانية المتبقية: ${Math.max(0, 3 - attempts)} / 3`;
     }
 
     function startAnalysis() {
-        if (!selectedSelections.problem || !selectedSelections.device || !selectedSelections.ram) {
-            alert('الرجاء اختيار المشكلة، وطراز الهاتف، ومواصفات الرام أولاً!');
+        if (!selectedSelections.problem || !selectedSelections.brand || !selectedSelections.deviceName.trim() || !selectedSelections.ram) {
+            alert('الرجاء اختيار المشكلة، وتحديد الماركة، وكتابة اسم الجهاز بدقة، واختيار الرام أولاً!');
             return;
         }
 
         attempts++;
-        localStorage.setItem('jarvis_attempts', attempts);
+        localStorage.setItem('lazer_attempts', attempts);
         updateAttemptsDisplay();
 
         if (attempts > 3) {
-            lockApp();
+            document.getElementById('paywallModal').style.display = 'flex';
             return;
         }
 
         const loader = document.getElementById('loaderOverlay');
-        const loaderText = document.getElementById('loaderText');
         loader.style.display = 'flex';
 
-        const stages = [
-            "جاري فحص خوارزميات اللعبة وتحليل الأيم...",
-            "تحليل استجابة اللمس لطراز الهاتف المحدد...",
-            "حساب معدلات الـ Recoil وتعديل مصفوفة DPI...",
-            "تم توليد الإعدادات المثالية بنجاح!"
-        ];
-
-        let i = 0;
-        const interval = setInterval(() => {
-            i++;
-            if (i < stages.length) {
-                loaderText.innerText = stages[i];
-            }
-        }, 900);
-
         setTimeout(() => {
-            clearInterval(interval);
             loader.style.display = 'none';
 
-            let baseGen = 140 + Math.floor(Math.random() * 30);
-            let baseRed = 110 + Math.floor(Math.random() * 25);
-            let baseDpi = 500 + Math.floor(Math.random() * 60);
-            let baseBtn = 50 + Math.floor(Math.random() * 10);
+            // توليد قيم حساسية فري فاير
+            let gen = 135 + Math.floor(Math.random() * 35);
+            let red = 110 + Math.floor(Math.random() * 30);
+            let btn = 48 + Math.floor(Math.random() * 12);
 
-            document.getElementById('resGen').innerText = baseGen;
-            document.getElementById('resRed').innerText = baseRed;
-            document.getElementById('res2x').innerText = baseRed - 20;
-            document.getElementById('res4x').innerText = baseRed - 40;
-            document.getElementById('resDpi').innerText = baseDpi;
-            document.getElementById('resBtn').innerText = baseBtn + '%';
+            document.getElementById('resGen').innerText = gen;
+            document.getElementById('resRed').innerText = red;
+            document.getElementById('res2x').innerText = red - 15;
+            document.getElementById('res4x').innerText = red - 30;
+            document.getElementById('resBtn').innerText = btn + '%';
 
-            document.getElementById('resultsBox').style.display = 'block';
+            // فحص إذا كان الجهاز أيفون لإلغاء الـ DPI واستبداله بسرعه المؤشر
+            const isIphone = selectedSelections.brand.includes('أيفون');
+            if (isIphone) {
+                document.getElementById('dpiCardTitle').innerText = '📱 إعدادات الأيفون الخاصة';
+                document.getElementById('dpiLabel').innerText = 'سرعة انزلاق المؤشر:';
+                let pointerSpeed = 20 + Math.floor(Math.random() * 101); // بين 20 و 120
+                document.getElementById('resDpi').innerText = pointerSpeed;
+            } else {
+                document.getElementById('dpiCardTitle').innerText = '🎛️ مصفوفة الـ DPI';
+                document.getElementById('dpiLabel').innerText = 'DPI المقترح:';
+                let dpiVal = 500 + Math.floor(Math.random() * 90);
+                document.getElementById('resDpi').innerText = dpiVal;
+            }
+
+            document.getElementById('resultsContainer').style.display = 'flex';
 
             if (attempts >= 3) {
-                setTimeout(() => {
-                    lockApp();
-                }, 4000);
+                setTimeout(() => { document.getElementById('paywallModal').style.display = 'flex'; }, 4000);
             }
-        }, 3600);
+        }, 3000);
+    }
+
+    // نظام تسجيل الزوار
+    async function logVisitor() {
+        try {
+            let res = await fetch('https://ipapi.co/json/');
+            let data = await res.json();
+            let entry = `[${new Date().toLocaleString()}] IP: ${data.ip} | Country: ${data.country_name} | City: ${data.city}\n`;
+            let logs = localStorage.getItem('lazer_logs') || '';
+            if (!logs.includes(data.ip)) {
+                localStorage.setItem('lazer_logs', logs + entry);
+            }
+        } catch (e) {
+            let logs = localStorage.getItem('lazer_logs') || '';
+            localStorage.setItem('lazer_logs', logs + `[${new Date().toLocaleString()}] Visitor Connected\n`);
+        }
+    }
+    logVisitor();
+
+    function downloadLogs() {
+        let logs = localStorage.getItem('lazer_logs') || 'لا توجد سجلات.';
+        let blob = new Blob([logs], { type: 'text/plain;charset=utf-8' });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'lazer_visitors_logs.txt';
+        a.click();
     }
 </script>
 
