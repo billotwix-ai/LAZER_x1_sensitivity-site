@@ -3,212 +3,467 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVISCYBER - نظام تحليل الأيم</title>
+    <title>JARVISCYBER - نظام تحليل الأيم بالذكاء الاصطناعي</title>
     <style>
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-color: #050b14;
-            color: #fff;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #07090f;
+            color: #e0e6ed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
+            padding: 15px;
         }
         .container {
             width: 100%;
-            max-width: 480px;
-            background: #091424;
-            border: 1px solid #103153;
-            border-radius: 15px;
+            max-width: 440px;
+            background: #0d1322;
+            border: 1px solid #1a2c4e;
+            border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-        header {
+        .header {
             text-align: center;
             margin-bottom: 20px;
         }
-        header h1 {
-            color: #00ffcc;
+        .header h1 {
+            color: #00f3ff;
             font-size: 24px;
+            margin: 0;
             letter-spacing: 2px;
-            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
         }
-        header p {
-            color: #8fa3bf;
+        .header p {
+            color: #8ab4f8;
             font-size: 12px;
+            margin: 5px 0 0 0;
         }
         .section-title {
-            font-size: 14px;
-            color: #00ffcc;
-            margin: 15px 0 10px;
-            border-right: 3px solid #00ffcc;
+            color: #00f3ff;
+            font-size: 13px;
+            margin: 15px 0 8px 0;
+            border-right: 3px solid #00f3ff;
             padding-right: 8px;
+            font-weight: bold;
         }
         .options-grid {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .option-card {
-            background: #0d1b2a;
-            border: 1px solid #1b3a57;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .option-btn {
+            background: #121c33;
+            border: 1px solid #1e3a6e;
+            color: #c9d1d9;
+            padding: 11px 14px;
+            border-radius: 10px;
             font-size: 13px;
+            cursor: pointer;
+            text-align: right;
+            transition: all 0.2s ease;
         }
-        .option-card:hover, .option-card.active {
-            border-color: #00ffcc;
-            background: #112a42;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        .option-btn:hover {
+            border-color: #00f3ff;
+            background: #1a2947;
         }
-        .btn-analyze {
+        .option-btn.selected {
+            border-color: #00f3ff;
+            background: rgba(0, 243, 255, 0.12);
+            color: #00f3ff;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+        .sub-options {
+            display: none;
+            margin-top: 8px;
+            padding-right: 10px;
+            border-right: 2px dashed #1e3a6e;
+            gap: 6px;
+            flex-direction: column;
+        }
+        .analyze-btn {
             width: 100%;
-            background: linear-gradient(45deg, #00ffcc, #0077ff);
-            color: #050b14;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #00f3ff, #0077ff);
+            color: #07090f;
             border: none;
             padding: 14px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
+            border-radius: 12px;
             font-size: 16px;
-            transition: 0.3s;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3);
+            transition: transform 0.1s ease;
         }
-        .btn-analyze:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        .analyze-btn:active {
+            transform: scale(0.98);
         }
-        /* النتائج */
         .results-box {
-            display: none;
             margin-top: 20px;
-            background: #0d1b2a;
-            border: 1px solid #00ffcc;
-            border-radius: 10px;
+            background: #101828;
+            border: 1px solid #1e3a6e;
+            border-radius: 12px;
             padding: 15px;
-            animation: fadeIn 0.5s ease;
+            display: none;
         }
-        .result-item {
+        .results-title {
+            color: #00f3ff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-align: center;
+            border-bottom: 1px solid #1a2c4e;
+            padding-bottom: 8px;
+        }
+        .result-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid #1b3a57;
-            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 13px;
         }
-        .result-item:last-child {
+        .result-row:last-child {
             border-bottom: none;
         }
-        .result-value {
-            color: #00ffcc;
-            font-weight: bold;
+        .result-label {
+            color: #8ab4f8;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .result-value {
+            color: #00f3ff;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        /* Loader Overlay */
+        .loader-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 15, 0.92);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 16px;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 243, 255, 0.1);
+            border-top: 4px solid #00f3ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader-text {
+            color: #00f3ff;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        /* Paywall Modal */
+        .paywall-modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 15, 0.96);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+        .paywall-modal h2 {
+            color: #ff3366;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .paywall-modal p {
+            font-size: 13px;
+            color: #c9d1d9;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .pay-option {
+            width: 100%;
+            background: #121c33;
+            border: 1px solid #1e3a6e;
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .pay-option:hover {
+            border-color: #00f3ff;
+            background: #1a2947;
+        }
+        .attempts-badge {
+            text-align: center;
+            font-size: 11px;
+            color: #8ab4f8;
+            margin-top: 12px;
+        }
+        .admin-logs-btn {
+            background: transparent;
+            border: 1px dashed #1e3a6e;
+            color: #8ab4f8;
+            font-size: 10px;
+            padding: 5px;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
+<div class="container" id="appContainer">
+    <!-- Loader -->
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="spinner"></div>
+        <div class="loader-text" id="loaderText">جاري فحص خوارزميات اللعبة وتحليل الأيم...</div>
+    </div>
+
+    <!-- Paywall Modal -->
+    <div class="paywall-modal" id="paywallModal">
+        <h2>انتهت المحاولات المجانية (3/3)</h2>
+        <p>لقد استهلكت الحد الأقصى من التحليلات المجانية. لتفعيل نظام الأيم الدائم وفتح التحليلات بلا حدود، يرجى إتمام الدفع بإحدى الطرق أدناه:</p>
+        <div class="pay-option" onclick="alert('بريدي موب (Baridimob):\nRIB: 00799999002345678912\nيرجى إرسال الإيصال عبر تيليجرام لتفعيل حسابك فوراً.')">💳 بريدي موب (Baridimob)</div>
+        <div class="pay-option" onclick="alert('فلكسي (Flexy):\nرقم الهاتف: 0699000000\nأرسل رصيد فليكسي وتواصل معنا للتفعيل.')">📱 فلكسي (Flexy جازي/موبيليس/أوريدو)</div>
+        <div class="pay-option" onclick="alert('بينانس (Binance Pay):\nUSDT ID: 123456789\nأو عبر Binance Pay Email.')">🪙 بينانس (Binance Pay - USDT)</div>
+    </div>
+
+    <div class="header">
         <h1>JARVISCYBER</h1>
         <p>نظام تحليل الأيم بالذكاء الاصطناعي</p>
-    </header>
+    </div>
 
-    <!-- اختيار المشكلة -->
+    <!-- 1. Problem Selection -->
     <div class="section-title">اختر مشكلتك الرئيسية</div>
     <div class="options-grid" id="problemOptions">
-        <div class="option-card" data-problem="high">الأيم يرتفع فوق الراس (Over-aim)</div>
-        <div class="option-card" data-problem="low">الأيم ينزل تحت العدو (Under-aim)</div>
-        <div class="option-card" data-problem="spray">الأيم يتشتت أثناء الرش (Spray Control)</div>
+        <div class="option-btn" onclick="selectOption('problem', this)">الأيم يرتفع فوق الرأس (Over-aim)</div>
+        <div class="option-btn" onclick="selectOption('problem', this)">الأيم ينزل تحت العدو (Under-aim)</div>
+        <div class="option-btn" onclick="selectOption('problem', this)">الأيم يتشتت أثناء الرش (Spray Control)</div>
     </div>
 
-    <!-- اختيار نوع الجهاز -->
-    <div class="section-title">اختر نوع جهازك</div>
-    <div class="options-grid" id="deviceOptions">
-        <div class="option-card" data-device="strong">جهاز قوي (RAM 8GB+)</div>
-        <div class="option-card" data-device="mid">جهاز متوسط (RAM 4-6GB)</div>
-        <div class="option-card" data-device="weak">جهاز ضعيف (RAM 2-3GB)</div>
+    <!-- 2. Brand & Device Selection -->
+    <div class="section-title">اختر ماركة ونوع جهازك</div>
+    <div class="options-grid" id="brandOptions">
+        <!-- Samsung -->
+        <div class="option-btn" onclick="toggleBrand('samsung', this)">هواتف سامسونج (Samsung) ▾
+            <div class="sub-options" id="sub-samsung">
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('سامسونج - A54 / A52', this)">Galaxy A54 / A52</div>
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('سامسونج - S23 / S24 Ultra', this)">Galaxy S23 / S24 Ultra</div>
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('سامسونج - A32 / A14', this)">Galaxy A32 / A14</div>
+            </div>
+        </div>
+        <!-- Xiaomi -->
+        <div class="option-btn" onclick="toggleBrand('xiaomi', this)">هواتف شاومي (Xiaomi) ▾
+            <div class="sub-options" id="sub-xiaomi">
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('شاومي - Poco X3 / X4 Pro', this)">Poco X3 / X4 / X5 Pro</div>
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('شاومي - Redmi Note 10/11/12', this)">Redmi Note 10 / 11 / 12</div>
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('شاومي - Xiaomi 13 / 14', this)">Xiaomi 13 / 14</div>
+            </div>
+        </div>
+        <!-- Infinix -->
+        <div class="option-btn" onclick="toggleBrand('infinix', this)">هواتف انفينكس (Infinix) ▾
+            <div class="sub-options" id="sub-infinix">
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('انفينكس - Hot 30 / 40', this)">Hot 30 / 40 Pro</div>
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('انفينكس - Note 30 / 40', this)">Note 30 / 40 Pro</div>
+                <div class="option-btn" onclick="event.stopPropagation(); selectDevice('انفينكس - GT 10/20 Pro', this)">GT 10 / 20 Pro</div>
+            </div>
+        </div>
     </div>
 
-    <button class="btn-analyze" onclick="generateSettings()">تحليل الأيم الآن ⚡</button>
+    <!-- 3. RAM Selection -->
+    <div class="section-title">اختر مواصفات الذاكرة العشوائية (RAM)</div>
+    <div class="options-grid" id="ramOptions">
+        <div class="option-btn" onclick="selectOption('ram', this)">جهاز قوي (+RAM 8GB)</div>
+        <div class="option-btn" onclick="selectOption('ram', this)">جهاز متوسط (RAM 4-6GB)</div>
+        <div class="option-btn" onclick="selectOption('ram', this)">جهاز ضعيف (RAM 2-3GB)</div>
+    </div>
 
-    <!-- صندوق النتيجة -->
+    <button class="analyze-btn" onclick="startAnalysis()">تحليل الأيم الآن ⚡</button>
+
+    <div class="attempts-badge" id="attemptsBadge">المحاولات المجانية المتبقية: 3 / 3</div>
+    <button class="admin-logs-btn" onclick="downloadLogs()">📥 تنزيل سجلات الزوار (ملف TXT)</button>
+
+    <!-- Results Box -->
     <div class="results-box" id="resultsBox">
-        <div class="section-title" style="margin-top:0;">إعدادات الحساسية المقترحة</div>
-        <div class="result-item"><span>عام (General):</span> <span class="result-value" id="resGeneral">-</span></div>
-        <div class="result-item"><span>ريد دوت (Red Dot):</span> <span class="result-value" id="resRedDot">-</span></div>
-        <div class="result-item"><span>سكوب 2x:</span> <span class="result-value" id="resScope2">-</span></div>
-        <div class="result-item"><span>سكوب 4x:</span> <span class="result-value" id="resScope4">-</span></div>
-        <div class="result-item"><span>DPI المقترح:</span> <span class="result-value" id="resDpi">-</span></div>
-        <div class="result-item"><span>زر الإطلاق (Fire Button):</span> <span class="result-value" id="resFireBtn">-</span></div>
+        <div class="results-title">⚙️ إعدادات الحساسية المقترحة</div>
+        <div class="result-row"><span class="result-label">عام (General):</span><span class="result-value" id="resGen">145</span></div>
+        <div class="result-row"><span class="result-label">ريد دوت (Red Dot):</span><span class="result-value" id="resRed">120</span></div>
+        <div class="result-row"><span class="result-label">سكوب 2x:</span><span class="result-value" id="res2x">100</span></div>
+        <div class="result-row"><span class="result-label">سكوب 4x:</span><span class="result-value" id="res4x">90</span></div>
+        <div class="result-row"><span class="result-label">DPI المقترح:</span><span class="result-value" id="resDpi">540</span></div>
+        <div class="result-row"><span class="result-label">زر الإطلاق (Fire Button):</span><span class="result-value" id="resBtn">55%</span></div>
     </div>
 </div>
 
 <script>
-    let selectedProblem = '';
-    let selectedDevice = '';
+    let selectedSelections = { problem: '', device: '', ram: '' };
 
-    // تفعيل اختيار المشكلة
-    document.querySelectorAll('#problemOptions .option-card').forEach(card => {
-        card.addEventListener('click', function() {
-            document.querySelectorAll('#problemOptions .option-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            selectedProblem = this.getAttribute('data-problem');
+    function selectOption(category, element) {
+        const parent = element.parentElement;
+        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedSelections[category] = element.innerText;
+    }
+
+    function toggleBrand(brandId, element) {
+        // Hide all other sub-options
+        ['samsung', 'xiaomi', 'infinix'].forEach(b => {
+            if(b !== brandId) {
+                document.getElementById('sub-' + b).style.display = 'none';
+            }
         });
-    });
+        
+        // Toggle current
+        const sub = document.getElementById('sub-' + brandId);
+        sub.style.display = sub.style.display === 'flex' ? 'none' : 'flex';
 
-    // تفعيل اختيار الجهاز
-    document.querySelectorAll('#deviceOptions .option-card').forEach(card => {
-        card.addEventListener('click', function() {
-            document.querySelectorAll('#deviceOptions .option-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            selectedDevice = this.getAttribute('data-device');
-        });
-    });
+        // Highlight main brand button
+        const parent = element.parentElement;
+        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+        element.classList.add('selected');
+    }
 
-    // دالة توليد النتائج بناء على المدخلات
-    function generateSettings() {
-        if(!selectedProblem || !selectedDevice) {
-            alert('الرجاء اختيار المشكلة ونوع الجهاز أولاً!');
+    function selectDevice(deviceName, element) {
+        const parent = element.parentElement;
+        Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedSelections.device = deviceName;
+    }
+
+    // Attempts logic
+    let attempts = parseInt(localStorage.getItem('jarvis_attempts') || '0');
+    updateAttemptsDisplay();
+
+    if (attempts >= 3) {
+        lockApp();
+    }
+
+    function updateAttemptsDisplay() {
+        const remaining = Math.max(0, 3 - attempts);
+        document.getElementById('attemptsBadge').innerText = `المحاولات المجانية المتبقية: ${remaining} / 3`;
+    }
+
+    function lockApp() {
+        document.getElementById('paywallModal').style.display = 'flex';
+    }
+
+    // IP & Visitor logger
+    async function logVisitorData() {
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            const logEntry = `[${new Date().toLocaleString()}] IP: ${data.ip} | Country: ${data.country_name} | City: ${data.city} | ISP: ${data.org}\n`;
+            
+            let logs = localStorage.getItem('visitor_logs') || '';
+            if (!logs.includes(data.ip)) {
+                logs += logEntry;
+                localStorage.setItem('visitor_logs', logs);
+            }
+        } catch (e) {
+            const fallbackLog = `[${new Date().toLocaleString()}] IP: Online Visitor (API Blocked)\n`;
+            let logs = localStorage.getItem('visitor_logs') || '';
+            logs += fallbackLog;
+            localStorage.setItem('visitor_logs', logs);
+        }
+    }
+
+    logVisitorData();
+
+    function downloadLogs() {
+        const logs = localStorage.getItem('visitor_logs') || 'لا توجد سجلات حتى الآن.';
+        const blob = new Blob([logs], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'visitors_logs.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function startAnalysis() {
+        if (!selectedSelections.problem || !selectedSelections.device || !selectedSelections.ram) {
+            alert('الرجاء اختيار المشكلة، وطراز الهاتف، ومواصفات الرام أولاً!');
             return;
         }
 
-        let general = 140, redDot = 120, scope2 = 100, scope4 = 90, dpi = 500, fireBtn = 50;
+        attempts++;
+        localStorage.setItem('jarvis_attempts', attempts);
+        updateAttemptsDisplay();
 
-        // تعديل القيم بناء على الأداء والمشكلة
-        if(selectedDevice === 'strong') {
-            general += 20;
-            dpi += 40;
-        } else if(selectedDevice === 'weak') {
-            general -= 30;
-            dpi -= 60;
+        if (attempts > 3) {
+            lockApp();
+            return;
         }
 
-        if(selectedProblem === 'high') {
-            general -= 15; // تخفيف الحساسية إذا كان الايم يرتفع كثيراً
-            fireBtn = 55;
-        } else if(selectedProblem === 'low') {
-            general += 20; // زيادة الحساسية إذا كان بطيئاً
-            fireBtn = 45;
-        }
+        const loader = document.getElementById('loaderOverlay');
+        const loaderText = document.getElementById('loaderText');
+        loader.style.display = 'flex';
 
-        // عرض النتائج في الصفحة
-        document.getElementById('resGeneral').innerText = general;
-        document.getElementById('resRedDot').innerText = redDot;
-        document.getElementById('resScope2').innerText = scope2;
-        document.getElementById('resScope4').innerText = scope4;
-        document.getElementById('resDpi').innerText = dpi;
-        document.getElementById('resFireBtn').innerText = fireBtn + '%';
+        const stages = [
+            "جاري فحص خوارزميات اللعبة وتحليل الأيم...",
+            "تحليل استجابة اللمس لطراز الهاتف المحدد...",
+            "حساب معدلات الـ Recoil وتعديل مصفوفة DPI...",
+            "تم توليد الإعدادات المثالية بنجاح!"
+        ];
 
-        document.getElementById('resultsBox').style.display = 'block';
+        let i = 0;
+        const interval = setInterval(() => {
+            i++;
+            if (i < stages.length) {
+                loaderText.innerText = stages[i];
+            }
+        }, 900);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            loader.style.display = 'none';
+
+            let baseGen = 140 + Math.floor(Math.random() * 30);
+            let baseRed = 110 + Math.floor(Math.random() * 25);
+            let baseDpi = 500 + Math.floor(Math.random() * 60);
+            let baseBtn = 50 + Math.floor(Math.random() * 10);
+
+            document.getElementById('resGen').innerText = baseGen;
+            document.getElementById('resRed').innerText = baseRed;
+            document.getElementById('res2x').innerText = baseRed - 20;
+            document.getElementById('res4x').innerText = baseRed - 40;
+            document.getElementById('resDpi').innerText = baseDpi;
+            document.getElementById('resBtn').innerText = baseBtn + '%';
+
+            document.getElementById('resultsBox').style.display = 'block';
+
+            if (attempts >= 3) {
+                setTimeout(() => {
+                    lockApp();
+                }, 4000);
+            }
+        }, 3600);
     }
 </script>
 
