@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم الأدمن - LAZER X1</title>
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
         body {
             background-color: #0f172a;
             color: #f8fafc;
@@ -14,6 +17,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 15px;
         }
         .login-box, .admin-panel {
             background: #1e293b;
@@ -25,7 +29,7 @@
             text-align: center;
         }
         input {
-            width: 90%;
+            width: 100%;
             padding: 12px;
             margin: 15px 0;
             background: #0f172a;
@@ -33,6 +37,10 @@
             color: #fff;
             border-radius: 6px;
             font-size: 16px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #2563eb;
         }
         button {
             background: #2563eb;
@@ -44,6 +52,7 @@
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
+            transition: background 0.3s;
         }
         button:hover {
             background: #1d4ed8;
@@ -56,6 +65,13 @@
             font-size: 14px;
             margin-top: 5px;
         }
+        .home-btn {
+            background: #334155;
+            margin-top: 10px;
+        }
+        .home-btn:hover {
+            background: #475569;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +83,7 @@
         <input type="password" id="adminIdInput" placeholder="أدخل الآدي (مثال: 5840394041)">
         <button onclick="checkAdmin()">دخول</button>
         <div id="errorMsg" class="error"></div>
+        <button class="home-btn" onclick="window.location.href='index.html'">العودة للموقع الرئيسي</button>
     </div>
 
     <!-- لوحة التحكم الفعلية (تظهر بعد الدخول الصحيح) -->
@@ -74,18 +91,20 @@
         <h2>مرحباً بك يا أدمن ⚡</h2>
         <p>أنت الآن تحكم وتتحكم في لوحة سيطرة LAZER X1 بنجاح.</p>
         <hr style="border-color: #334155; margin: 20px 0;">
-        <button onclick="logout()" style="background: #dc2626;">تسجيل خروج</button>
+        <button onclick="logout()" style="background: #dc2626; margin-bottom: 10px;">تسجيل خروج</button>
+        <button class="home-btn" onclick="window.location.href='index.html'">الذهاب للموقع الرئيسي</button>
     </div>
 
     <script>
         function checkAdmin() {
-            const inputVal = document.getElementById('adminIdInput').value;
+            const inputVal = document.getElementById('adminIdInput').value.trim();
             const correctId = "5840394041"; // آدي الأدمن الخاص بك
 
             if (inputVal === correctId) {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('panelSection').classList.remove('hidden');
             } else {
+                document.getElementById('errorMsgffes' || 'errorMsg').innerText = "الآدي غير صحيح، حاول مرة أخرى!";
                 document.getElementById('errorMsg').innerText = "الآدي غير صحيح، حاول مرة أخرى!";
             }
         }
